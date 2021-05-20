@@ -51,7 +51,7 @@ display = adafruit_ili9341.ILI9341(display_bus, width=240, height=320, rotation=
 st_cs_pin = digitalio.DigitalInOut(board.D6)
 st = adafruit_stmpe610.Adafruit_STMPE610_SPI(spi, st_cs_pin)
 
-# Variable for registering just one touch
+# For registering just one touch
 touched = 0
 
 # Groups
@@ -100,46 +100,39 @@ tab_number_group.append(tab_number_label)
 clock_label = label.Label(fontB, text="00:00", color=0xFFFFFF, max_glyphs=200, scale=1)
 clock_label.x = TABS_X+38
 clock_label.y = TABS_Y+50
-# row1_group.append(clock_label)
 
 # Item 2
 # Lambda text label objects
 lambdat_label = label.Label(fontVS, text="Lambda", color=0xFFFFFF, max_glyphs=200, scale=1)
 lambdat_label.x = TABS_X+10
 lambdat_label.y = TABS_Y+50
-# row1_group.append(lambdat_label)
 
 # Lambda label objects
 lambda_label = label.Label(fontB, text="NA", color=0xFFFFFF, max_glyphs=200, scale=1)
 lambda_label.x = TABS_X+105
 lambda_label.y = TABS_Y+50
-# row1_group.append(lambda_label)
 
 # Item 3
 # Oil p. text label objects
 oilpt_label = label.Label(fontS, text="Oil p.", color=0xFFFFFF, max_glyphs=200, scale=1)
 oilpt_label.x = TABS_X+10
 oilpt_label.y = TABS_Y+50
-# row2_group.append(oilpt_label)
 
 # Oil pressure label objects
 oilp_label = label.Label(fontB, text="NA", color=0xFFFFFF, max_glyphs=200, scale=1)
 oilp_label.x = TABS_X+105
 oilp_label.y = TABS_Y+50
-# row2_group.append(oilp_label)
 
 # Item 4
 # Oil temperature text label objects
 oiltt_label = label.Label(fontS, text="Oil t.", color=0xFFFFFF, max_glyphs=200, scale=1)
 oiltt_label.x = TABS_X+10
 oiltt_label.y = TABS_Y+50
-# row3_group.append(oiltt_label)
 
 # Oil temperature label objects
 oilt_label = label.Label(fontB, text="NA", color=0xFFFFFF, max_glyphs=200, scale=1)
 oilt_label.x = TABS_X+105
 oilt_label.y = TABS_Y+50
-# row3_group.append(oilt_label)
 
 # Rows
 row1 = row1_group
@@ -195,7 +188,7 @@ def save_tab():
     tabfile.write("%0.f\n" % tab_now)
     tabfile.close()
 
-#tab_now = 1
+#tab_now = 1 (Use this if you disable the sd card function)
 # Tab control
 def change_tab():
     tab_number_group.pop()
@@ -213,12 +206,12 @@ def change_tab():
 change_tab()
 
 #CAN BUS
-# If the CAN transceiver has a standby pin, bring it out of standby mode
+# The CAN transceiver has a standby pin, bring it out of standby mode
 if hasattr(board, 'CAN_STANDBY'):
     standby = digitalio.DigitalInOut(board.CAN_STANDBY)
     standby.switch_to_output(False)
 
-# If the CAN transceiver is powered by a boost converter, turn on its supply
+# The CAN transceiver is powered by a boost converter, turn on its supply
 if hasattr(board, 'BOOST_ENABLE'):
     boost_enable = digitalio.DigitalInOut(board.BOOST_ENABLE)
     boost_enable.switch_to_output(True)
@@ -232,9 +225,6 @@ listener = can.listen(matches=[canio.Match(0x602, mask=0x604)], timeout=.1)
 # Needed for CAN BUS
 old_bus_state = None
 last_message_id = 0
-
-# For sensor values update rate for better readibility
-last_update = time.monotonic()
 
 # Main loop
 while True:
@@ -287,29 +277,28 @@ while True:
 
     id = message.id
     if id == 0x602:
-        if last_message_id != 602:
+        # To make sure that after 0x603 message the 0x602 comes next. 
+        if last_message_id != 602: 
+            # Unpack message
             message = struct.unpack("<HBBBBh", data)
+            # Just for debugging
             # print(f"0x602: {message}")
-            # Update print oil pressure and oil temperature
+            # Update oil pressure and oil temperature
             oilt_label.text = message[2]
-            # print(f"oil_t = {oil_t}")
             oil_p = message[3]*0.0625
-            # print(f"oil_p = {round(oil_p, 1)}")
             oilp_label.text = round(oil_p, 1)
-            # To get both messages after another
+            # For message read order
             last_message_id = 602
 
     if id == 0x603:
-        if last_message_id != 603:
-            # Update rate 4hz
-            if time.monotonic() > last_update + 0.25:
-                message = struct.unpack("<bBBBHH", data)
-                # print(f"0x603: {message}")
-                # print lambda
-                # Update lambda value
-                lambda_value = message[2]*0.0078125
-                # print(f"lambda = , {round(lambda_value, 2)}")
-                lambda_label.text = round(lambda_value, 2)
-                # To get both messages after another
-                last_message_id = 603
-                last_update = time.monotonic()
+        # To make sure that after 0x602 message the 0x603 comes next. 
+        if last_message_id != 603: 
+            # Unpack message
+            message = struct.unpack("<bBBBHH", data)
+            # Just for debugging
+            # print(f"0x603: {message}")
+            # Update lambda value
+            lambda_value = message[2]*0.0078125
+            lambda_label.text = round(lambda_value, 2)
+            # For message read order
+            last_message_id = 603
