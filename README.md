@@ -1,4 +1,4 @@
-# EmuB-DIY-Gauge
+# Emu_Black_DIY_Gauge
 ### Adafruit Feather M4 CAN Express with 2.4" TFT FeatherWing displaying sensor values 
 
 Project goal was to greate small gauge for my Honda S2000 that displays time and sensor values from car ECU. 
