@@ -23,7 +23,7 @@ Car is equipped with Ecumaster Emu Black ECU that can send data to CAN bus. Powe
 - Last used tab is saved to SD card and read from there on boot 
 
 ### Wiring notices
-DS3231 VIN to Feather 3V pin
-Capacitor on input side of the regulator 
-Regulator output connected to USB-pin on Feather (not the recommended way, because it might damage the computer plugged to usb-port)
-More info: https://learn.adafruit.com/adafruit-feather-m0-basic-proto/power-management
+-DS3231 VIN to Feather 3V pin
+-Capacitor on input side of the regulator 
+-Regulator output connected to USB-pin on Feather (not the recommended way, because it might damage the computer plugged to usb-port)
+-More info: https://learn.adafruit.com/adafruit-feather-m0-basic-proto/power-management
