@@ -10,7 +10,7 @@ Car is equipped with Ecumaster Emu Black ECU that can send data to CAN bus. Powe
 - Adafruit DS3231 Precision RTC Breakout 
 - 5v regulator circuit
   - 7805 regulator
-  - 1uF tantalum capacitor
+  - 1uF 35v tantalum capacitor
   - Proto board pcb
  
 ### Case
@@ -22,4 +22,8 @@ Car is equipped with Ecumaster Emu Black ECU that can send data to CAN bus. Powe
 - 3 different tabs showing different values and the tab can be changed by touching the screen
 - Last used tab is saved to SD card and read from there on boot 
 
-
+### Wiring notices
+DS3231 VIN to Feather 3V pin
+Capacitor on input side of the regulator 
+Regulator output connected to USB-pin on Feather (not the recommended way, because it might damage the computer plugged to usb-port)
+More info: https://learn.adafruit.com/adafruit-feather-m0-basic-proto/power-management
