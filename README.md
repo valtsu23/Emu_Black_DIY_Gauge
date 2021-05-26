@@ -8,6 +8,7 @@ Car is equipped with Ecumaster Emu Black ECU that can send data to CAN bus. Powe
 - Adafruit Feather M4 CAN Express with ATSAME51 
 - Adafruit 2.4" TFT FeatherWing 
 - Adafruit DS3231 Precision RTC Breakout 
+- JST-SM 4pin connector
 - 5v regulator circuit
   - 7805 regulator
   - 1uF 35v tantalum capacitor
@@ -21,6 +22,7 @@ Car is equipped with Ecumaster Emu Black ECU that can send data to CAN bus. Powe
 ### Display features: 
 - 3 different tabs showing different values and the tab can be changed by touching the screen
 - Last used tab is saved to SD card and read from there on boot 
+- Video of working display: 
 
 ### Wiring notices
 - DS3231 VIN to Feather 3V pin
@@ -28,6 +30,11 @@ Car is equipped with Ecumaster Emu Black ECU that can send data to CAN bus. Powe
 - Regulator output connected to USB-pin on Feather (not the recommended way, because it might damage the computer plugged to usb-port)
 More info: https://learn.adafruit.com/adafruit-feather-m0-basic-proto/power-management
 
+### Useful links
+https://circuitpython.readthedocs.io/en/latest/shared-bindings/canio/index.html
+https://circuitpython.readthedocs.io/en/latest/shared-bindings/displayio/
+https://docs.python.org/3/library/struct.html
+https://en.wikipedia.org/wiki/C_data_types
 
 ![image1](/Images/IMG_20210524_143746.jpg)
 
