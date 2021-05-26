@@ -31,10 +31,10 @@ Car is equipped with Ecumaster Emu Black ECU that can send data to CAN bus. Powe
 More info: https://learn.adafruit.com/adafruit-feather-m0-basic-proto/power-management
 
 ### Useful links
-https://circuitpython.readthedocs.io/en/latest/shared-bindings/canio/index.html
-https://circuitpython.readthedocs.io/en/latest/shared-bindings/displayio/
-https://docs.python.org/3/library/struct.html
-https://en.wikipedia.org/wiki/C_data_types
+- https://circuitpython.readthedocs.io/en/latest/shared-bindings/canio/index.html
+- https://circuitpython.readthedocs.io/en/latest/shared-bindings/displayio/
+- https://docs.python.org/3/library/struct.html
+- https://en.wikipedia.org/wiki/C_data_types
 
 ![image1](/Images/IMG_20210524_143746.jpg)
 
