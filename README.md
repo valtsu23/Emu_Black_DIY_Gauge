@@ -30,3 +30,9 @@ More info: https://learn.adafruit.com/adafruit-feather-m0-basic-proto/power-mana
 
 
 ![image1](/Images/IMG_20210524_143746.jpg)
+
+![image2](/Images/IMG_20210524_143809.jpg)
+
+![image3](/Images/IMG_20210524_143826.jpg)
+
+![image4](/Images/IMG_20210331_225259.jpg)
