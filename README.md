@@ -22,7 +22,7 @@ Car is equipped with Ecumaster Emu Black ECU that can send data to CAN bus. Powe
 ### Display features: 
 - 3 different tabs showing different values and the tab can be changed by touching the screen
 - Last used tab is saved to SD card and read from there on boot 
-- Video of the working display: 
+- Video of the working display: https://youtu.be/Mr_nFbw4OqU
 
 ### Wiring notices
 - DS3231 VIN to Feather 3V pin
