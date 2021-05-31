@@ -20,8 +20,8 @@ Car is equipped with Ecumaster Emu Black ECU that can send data to CAN bus. Powe
 - 3d printed from PETG
 
 ### Cost
-Parts in total about 80€ 
-Case was 20€ printed by a hobbyist
+- Parts in total about 80€ 
+- Case was 20€ printed by a hobbyist
 
 ### Display features: 
 - 3 different tabs showing different values and the tab can be changed by touching the screen
