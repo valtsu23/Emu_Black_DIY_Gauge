@@ -54,14 +54,14 @@ st = adafruit_stmpe610.Adafruit_STMPE610_SPI(spi, st_cs_pin)
 # For registering just one touch
 touched = 0
 
-# Groups
+# Groups under main display group
 tab_number_group = displayio.Group(x=0, y=0)
 row1_group = displayio.Group(x=0, y=0)
 row2_group = displayio.Group(x=0, y=108)
 row3_group = displayio.Group(x=0, y=214)
 lines_group = displayio.Group(x=0, y=0)
 
-# Display group
+# Main display group
 view = displayio.Group(max_size=15)
 view.append(tab_number_group)
 view.append(row1_group)
