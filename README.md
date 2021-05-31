@@ -36,7 +36,7 @@ More info: https://learn.adafruit.com/adafruit-feather-m0-basic-proto/power-mana
 
 ### Understanding how it works
 - The code.py file contains the main code. I have used many examples to build the code.
-- Data showed on the diplay is split in several goups. There is one main group and 5 lower groups. 4 of the groups data is changed during the tab change. 
+- Data showed on the diplay is split in several goups. There is one main group and 5 lower groups. 4 groups data is changed during the tab change. 
 - Checkout links 1 and 2 about controlling the display. 
 - Link 3 helps you undestand the Can-Bus communication. 
 - I'm using Struct library to unpack the Can_bus messages (links 4 and 5)
