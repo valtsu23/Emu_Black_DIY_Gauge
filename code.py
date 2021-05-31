@@ -37,13 +37,13 @@ sdcard = adafruit_sdcard.SDCard(spi, sd_cs)
 vfs = storage.VfsFat(sdcard)
 storage.mount(vfs, "/sd")
 
-# Create library object using our Bus SPI port
+# Display
+# Release any resources currently in use for the displays
 displayio.release_displays()
 
-# TFT pins
+# TFT settings
 tft_cs = board.D9
 tft_dc = board.D10
-
 display_bus = displayio.FourWire(spi, command=tft_dc, chip_select=tft_cs)
 display = adafruit_ili9341.ILI9341(display_bus, width=240, height=320, rotation=90)
 
