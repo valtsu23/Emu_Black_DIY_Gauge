@@ -34,11 +34,19 @@ Car is equipped with Ecumaster Emu Black ECU that can send data to CAN bus. Powe
 - Regulator output connected to USB-pin on Feather (not the recommended way, because it might damage the computer plugged to usb-port)
 More info: https://learn.adafruit.com/adafruit-feather-m0-basic-proto/power-management
 
+### Understanding how it works
+- The code.py file contains the main code. I have used many examples to build the code.
+- Data showed on the diplay is split in several goups. There is one main group and 5 lower groups. 4 of the groups data is changed during the tab change. 
+- Checkout links 1 and 2 about controlling the display. 
+- Link 3 helps you undestand the Can-Bus communication. 
+- I'm using Struct library to unpack the Can_bus messages (links 4 and 5)
+
 ### Useful links
-- https://circuitpython.readthedocs.io/en/latest/shared-bindings/canio/index.html
-- https://circuitpython.readthedocs.io/en/latest/shared-bindings/displayio/
-- https://docs.python.org/3/library/struct.html
-- https://en.wikipedia.org/wiki/C_data_types
+1. https://learn.adafruit.com/adafruit-2-4-tft-touch-screen-featherwing/2-4-tft-featherwing
+2. https://learn.adafruit.com/circuitpython-display-support-using-displayio/library-overview
+3. https://learn.adafruit.com/using-canio-circuitpython
+4. https://docs.python.org/3/library/struct.html
+5. https://en.wikipedia.org/wiki/C_data_types
 
 ![image1](/Images/IMG_20210524_143746.jpg)
 
