@@ -39,7 +39,7 @@ More info: https://learn.adafruit.com/adafruit-feather-m0-basic-proto/power-mana
 - Data showed on the diplay is split in several goups. There is one main group and 5 lower groups. 4 groups data is changed during the tab change. 
 Checkout links 1 and 2 about controlling the display. 
 - Link 3 helps you undestand the Can-Bus communication. 
-- I'm using Struct library to unpack the Can_bus messages (links 4 and 5)
+- I'm using Struct library to unpack the Can-Bus messages (links 4 and 5)
 
 ### Useful links
 1. https://learn.adafruit.com/adafruit-2-4-tft-touch-screen-featherwing/2-4-tft-featherwing
