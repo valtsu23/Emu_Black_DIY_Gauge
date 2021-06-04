@@ -72,7 +72,7 @@ view.append(lines_group)
 # Lines
 line_bitmap = displayio.Bitmap(240, 2, 1)
 line_palette = displayio.Palette(1)
-line_palette[0] = 0xFFFFFF  # Purple
+line_palette[0] = 0xFFFFFF  # White
 line_1 = displayio.TileGrid(line_bitmap, pixel_shader=line_palette, x=0, y=106)
 line_2 = displayio.TileGrid(line_bitmap, pixel_shader=line_palette, x=0, y=212)
 # Draw the lines
