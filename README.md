@@ -18,6 +18,7 @@ Car is equipped with Ecumaster Emu Black ECU that can send data to CAN bus. Powe
 - Original desing (feather-tft-case): https://www.thingiverse.com/thing:2209964/files
 - I removed the hole for the switch and added hole for the connector
 - 3d printed from PETG
+- 4 x M2.5 Machine Screws
 
 ### Cost
 - Parts in total about 80€ 
