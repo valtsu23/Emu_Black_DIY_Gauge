@@ -1,3 +1,7 @@
+# Version 2.0
+# Added SD card check, error handling and SD card error message
+# Other small improvements
+
 import board
 import busio
 import struct
