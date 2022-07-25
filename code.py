@@ -320,3 +320,4 @@ while True:
         # Update lambda value
         lambda_value = message[2]*0.0078125
         lambda_label.text = round(lambda_value, 2)
+        
