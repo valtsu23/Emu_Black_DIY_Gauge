@@ -7,7 +7,6 @@ import busio
 import struct
 import time
 import displayio
-import terminalio
 import digitalio
 import canio
 from adafruit_display_text import label
@@ -18,36 +17,45 @@ import adafruit_ds3231
 import adafruit_sdcard
 import storage
 
+# SPI communication pins
+spi = board.SPI()
+
+# SD card
+sd_cs = digitalio.DigitalInOut(board.D5)
+# Error handling if SD card not working
+sd_card_ok = 1
+try:
+    sdcard = adafruit_sdcard.SDCard(spi, sd_cs)
+except OSError:
+    sd_card_ok = 0
+    tab_now = 1
+# If sd card is ok, mount it
+if sd_card_ok == 1:
+    vfs = storage.VfsFat(sdcard)
+    storage.mount(vfs, "/sd")
+
 # RTC communication
 myI2C = busio.I2C(board.SCL, board.SDA)
 rtc = adafruit_ds3231.DS3231(myI2C)
 
 if False:   # change to True if you want to write the time!
     #                     year, mon, date, hour, min, sec, wday, yday, isdst
-    t = time.struct_time((2021,  03,   16,   10,  30,  00,    0,   -1,    -1))
+    t = time.struct_time((2021,  3,   16,   10,  30,  00,    0,   -1,    -1))
     # you must set year, mon, date, hour, min, sec and weekday
-    # yearday is not supported, isdst can be set but we don't do anything with it at this time
+    # yearday is not supported, isdst can be set but
+    # we don't do anything with it at this time
 
     print("Setting time to:", t)     # uncomment for debugging
     rtc.datetime = t
     print()
 
-# SPI communication pins
-spi = board.SPI()
-
-# SD card
-sd_cs = digitalio.DigitalInOut(board.D5)
-sdcard = adafruit_sdcard.SDCard(spi, sd_cs)
-vfs = storage.VfsFat(sdcard)
-storage.mount(vfs, "/sd")
-
-# Display
-# Release any resources currently in use for the displays
+# Create library object using our Bus SPI port
 displayio.release_displays()
 
-# TFT settings
+# TFT pins
 tft_cs = board.D9
 tft_dc = board.D10
+
 display_bus = displayio.FourWire(spi, command=tft_dc, chip_select=tft_cs)
 display = adafruit_ili9341.ILI9341(display_bus, width=240, height=320, rotation=90)
 
@@ -58,25 +66,33 @@ st = adafruit_stmpe610.Adafruit_STMPE610_SPI(spi, st_cs_pin)
 # For registering just one touch
 touched = 0
 
-# Groups under main display group
+# Groups
+error_group = displayio.Group(x=0, y=0)
 tab_number_group = displayio.Group(x=0, y=0)
 row1_group = displayio.Group(x=0, y=0)
 row2_group = displayio.Group(x=0, y=108)
 row3_group = displayio.Group(x=0, y=214)
 lines_group = displayio.Group(x=0, y=0)
 
-# Main display group
+# Display group
 view = displayio.Group(max_size=15)
+view.append(error_group)
+view.append(lines_group)
 view.append(tab_number_group)
 view.append(row1_group)
 view.append(row2_group)
 view.append(row3_group)
-view.append(lines_group)
+
+
+# Colors
+line_color = 0xFFFFFF
+data_color = 0xFFFFFF
+error_color = 0xFF0000
 
 # Lines
 line_bitmap = displayio.Bitmap(240, 2, 1)
 line_palette = displayio.Palette(1)
-line_palette[0] = 0xFFFFFF  # White
+line_palette[0] = line_color
 line_1 = displayio.TileGrid(line_bitmap, pixel_shader=line_palette, x=0, y=106)
 line_2 = displayio.TileGrid(line_bitmap, pixel_shader=line_palette, x=0, y=212)
 # Draw the lines
@@ -92,29 +108,37 @@ fontB = bitmap_font.load_font("/Helvetica-Bold-62.bdf")
 fontS = bitmap_font.load_font("/Helvetica-Bold-35.bdf")
 fontVS = bitmap_font.load_font("/Helvetica-Bold-21.bdf")
 
+# Error messages (Only SD card error in use)
+error_label = label.Label(fontVS, text="SD ERROR", color=error_color, max_glyphs=200, scale=1)
+error_label.x = TABS_X + 130
+error_label.y = TABS_Y + 10
+if sd_card_ok == 0:
+    error_group.append(error_label)
+
 # Tab number
-tab_number_label = label.Label(fontVS, text="0", color=0xFFFFFF, max_glyphs=200, scale=1)
-tab_number_label.x = TABS_X+5
-tab_number_label.y = TABS_Y+15
+tab_number_label = label.Label(fontVS, text="0", color=data_color, max_glyphs=200, scale=1)
+tab_number_label.x = TABS_X + 5
+tab_number_label.y = TABS_Y + 10
 tab_number_group.append(tab_number_label)
 
 # Data rows
 # Item 1
 # Clock label objects
-clock_label = label.Label(fontB, text="00:00", color=0xFFFFFF, max_glyphs=200, scale=1)
-clock_label.x = TABS_X+38
-clock_label.y = TABS_Y+50
+clock_label = label.Label(fontB, text="00:00", color=data_color, max_glyphs=200, scale=1)
+clock_label.x = TABS_X + 38
+clock_label.y = TABS_Y + 50
 
 # Item 2
 # Lambda text label objects
-lambdat_label = label.Label(fontVS, text="Lambda", color=0xFFFFFF, max_glyphs=200, scale=1)
-lambdat_label.x = TABS_X+10
-lambdat_label.y = TABS_Y+50
+lambdat_label = label.Label(
+    fontVS, text="Lambda", color=data_color, max_glyphs=200, scale=1)
+lambdat_label.x = TABS_X + 10
+lambdat_label.y = TABS_Y + 50
 
 # Lambda label objects
-lambda_label = label.Label(fontB, text="NA", color=0xFFFFFF, max_glyphs=200, scale=1)
-lambda_label.x = TABS_X+105
-lambda_label.y = TABS_Y+50
+lambda_label = label.Label(fontB, text="NA", color=data_color, max_glyphs=200, scale=1)
+lambda_label.x = TABS_X + 105
+lambda_label.y = TABS_Y + 50
 
 # Item 3
 # Oil p. text label objects
@@ -129,14 +153,14 @@ oilp_label.y = TABS_Y+50
 
 # Item 4
 # Oil temperature text label objects
-oiltt_label = label.Label(fontS, text="Oil t.", color=0xFFFFFF, max_glyphs=200, scale=1)
-oiltt_label.x = TABS_X+10
-oiltt_label.y = TABS_Y+50
+oiltt_label = label.Label(fontS, text="Oil t.", color=data_color, max_glyphs=200, scale=1)
+oiltt_label.x = TABS_X + 10
+oiltt_label.y = TABS_Y + 50
 
 # Oil temperature label objects
-oilt_label = label.Label(fontB, text="NA", color=0xFFFFFF, max_glyphs=200, scale=1)
-oilt_label.x = TABS_X+105
-oilt_label.y = TABS_Y+50
+oilt_label = label.Label(fontB, text="NA", color=data_color, max_glyphs=200, scale=1)
+oilt_label.x = TABS_X + 105
+oilt_label.y = TABS_Y + 50
 
 # Rows
 row1 = row1_group
@@ -144,11 +168,8 @@ row2 = row2_group
 row3 = row3_group
 
 def clear_row(row):
-    try:
+    for x in range(len(row)):
         row.pop()
-        row.pop()
-    except IndexError:
-        pass
 
 def tab1():
     clear_row(row1)
@@ -165,10 +186,10 @@ def tab2():
     clear_row(row2)
     clear_row(row3)
     row1_group.append(clock_label)
-    row2_group.append(oilpt_label)
-    row2_group.append(oilp_label)
-    row3_group.append(lambdat_label)
-    row3_group.append(lambda_label)
+    row2_group.append(lambdat_label)
+    row2_group.append(lambda_label)
+    row3_group.append(oilpt_label)
+    row3_group.append(oilp_label)
 
 def tab3():
     clear_row(row1)
@@ -176,15 +197,16 @@ def tab3():
     clear_row(row3)
     row1_group.append(oiltt_label)
     row1_group.append(oilt_label)
-    row2_group.append(oilpt_label)
-    row2_group.append(oilp_label)
-    row3_group.append(lambdat_label)
-    row3_group.append(lambda_label)
+    row2_group.append(lambdat_label)
+    row2_group.append(lambda_label)
+    row3_group.append(oilpt_label)
+    row3_group.append(oilp_label)
 
-# Read last tab drom sd card in startup
-tabfile = open("/sd/tab_memory.txt", "r")
-tab_now = int(tabfile.readline())
-tabfile.close()
+# Read last tab drom sd card in startup if sd card ok
+if sd_card_ok == 1:
+    tabfile = open("/sd/tab_memory.txt", "r")
+    tab_now = int(tabfile.readline())
+    tabfile.close()
 
 # Save tab to sd card
 def save_tab():
@@ -192,7 +214,6 @@ def save_tab():
     tabfile.write("%0.f\n" % tab_now)
     tabfile.close()
 
-#tab_now = 1 (Use this if you disable the sd card function)
 # Tab control
 def change_tab():
     tab_number_group.pop()
@@ -204,12 +225,13 @@ def change_tab():
         tab2()
     if tab_now == 3:
         tab3()
-    save_tab()
+    if sd_card_ok == 1:
+        save_tab()
 
 # Run at startup
 change_tab()
 
-#CAN BUS
+# CAN BUS
 # The CAN transceiver has a standby pin, bring it out of standby mode
 if hasattr(board, 'CAN_STANDBY'):
     standby = digitalio.DigitalInOut(board.CAN_STANDBY)
@@ -220,15 +242,15 @@ if hasattr(board, 'BOOST_ENABLE'):
     boost_enable = digitalio.DigitalInOut(board.BOOST_ENABLE)
     boost_enable.switch_to_output(True)
 
-# Use this line if your board has dedicated CAN pins. (Feather M4 CAN and Feather STM32F405)
+# Use this line if your board has dedicated CAN pins.
+# (Feather M4 CAN and Feather STM32F405)
 can = canio.CAN(rx=board.CAN_RX, tx=board.CAN_TX, baudrate=500_000, auto_restart=True)
 
-# CAN listener 0x602 and 0x603
-listener = can.listen(matches=[canio.Match(0x602, mask=0x604)], timeout=.1)
+# CAN listener 0x600 - 0x603
+listener = can.listen(matches=[canio.Match(0x600, mask=0x604)], timeout=.1)
 
 # Needed for CAN BUS
 old_bus_state = None
-last_message_id = 0
 
 # Main loop
 while True:
@@ -270,39 +292,31 @@ while True:
     # Message handling
     if message is None:
         print("No message received within timeout")
-        #time.sleep(1)
+        # time.sleep(1)
         continue
 
     data = message.data
     if len(data) != 8:
         print(f"Unusual message length {len(data)}")
-        #time.sleep(1)
+        # time.sleep(1)
         continue
 
     id = message.id
     if id == 0x602:
-        # To make sure that after 0x603 message the 0x602 comes next. 
-        if last_message_id != 602: 
-            # Unpack message
-            message = struct.unpack("<HBBBBh", data)
-            # Just for debugging
-            # print(f"0x602: {message}")
-            # Update oil pressure and oil temperature
-            oilt_label.text = message[2]
-            oil_p = message[3]*0.0625
-            oilp_label.text = round(oil_p, 1)
-            # For message read order
-            last_message_id = 602
+        # Unpack message
+        message = struct.unpack("<HBBBBh", data)
+        # Just for debugging
+        # print(f"0x602: {message}")
+        # Update oil pressure and oil temperature
+        oilt_label.text = message[2]
+        oil_p = message[3]*0.0625
+        oilp_label.text = round(oil_p, 1)
 
     if id == 0x603:
-        # To make sure that after 0x602 message the 0x603 comes next. 
-        if last_message_id != 603: 
-            # Unpack message
-            message = struct.unpack("<bBBBHH", data)
-            # Just for debugging
-            # print(f"0x603: {message}")
-            # Update lambda value
-            lambda_value = message[2]*0.0078125
-            lambda_label.text = round(lambda_value, 2)
-            # For message read order
-            last_message_id = 603
+        # Unpack message
+        message = struct.unpack("<bBBBHH", data)
+        # Just for debugging
+        # print(f"0x603: {message}")
+        # Update lambda value
+        lambda_value = message[2]*0.0078125
+        lambda_label.text = round(lambda_value, 2)
