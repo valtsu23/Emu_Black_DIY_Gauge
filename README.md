@@ -49,10 +49,10 @@ Check links 1 and 2 about controlling the display.
 4. https://docs.python.org/3/library/struct.html
 5. https://en.wikipedia.org/wiki/C_data_types
 
-![image1](/Images/IMG_20210524_143746.jpg)
+![image1](https://github.com/valtsu23/Pictures/tree/main/Emu_Black_DIY_Gauge/IMG_20210524_143746.jpg)
 
-![image2](/Images/IMG_20210524_143809.jpg)
+![image2](https://github.com/valtsu23/Pictures/tree/main/Emu_Black_DIY_Gauge)/IMG_20210524_143809.jpg)
 
-![image3](/Images/IMG_20210524_143826.jpg)
+![image3](https://github.com/valtsu23/Pictures/tree/main/Emu_Black_DIY_Gauge/IMG_20210524_143826.jpg)
 
-![image4](/Images/IMG_20210331_225259.jpg)
+![image4](https://github.com/valtsu23/Pictures/tree/main/Emu_Black_DIY_Gauge/IMG_20210331_225259.jpg)
