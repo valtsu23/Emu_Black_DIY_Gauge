@@ -35,10 +35,6 @@ if sd_card_ok == 1:
     vfs = storage.VfsFat(sdcard)
     storage.mount(vfs, "/sd")
 
-# RTC communication
-myI2C = busio.I2C(board.SCL, board.SDA)
-rtc = adafruit_ds3231.DS3231(myI2C)
-
 if False:   # change to True if you want to write the time!
     #                     year, mon, date, hour, min, sec, wday, yday, isdst
     t = time.struct_time((2021,  3,   16,   10,  30,  00,    0,   -1,    -1))
@@ -124,10 +120,15 @@ tab_number_group.append(tab_number_label)
 
 # Data rows
 # Item 1
-# Clock label objects
-clock_label = label.Label(fontB, text="00:00", color=data_color, scale=1)
-clock_label.x = TABS_X + 38
-clock_label.y = TABS_Y + 50
+# Coolant temp
+cltt_label = label.Label(fontS, text="CLT", color=data_color, scale=1)
+cltt_label.x = TABS_X + 10
+cltt_label.y = TABS_Y + 50
+
+# Lambda label objects
+clt_label = label.Label(fontB, text="NA", color=data_color, scale=1)
+clt_label.x = TABS_X + 105
+clt_label.y = TABS_Y + 50
 
 # Item 2
 # Lambda text label objects
@@ -163,6 +164,17 @@ oilt_label = label.Label(fontB, text="NA", color=data_color, scale=1)
 oilt_label.x = TABS_X + 105
 oilt_label.y = TABS_Y + 50
 
+# Item 5
+# Intake air temperature text label objects
+iatt_label = label.Label(fontS, text="IAT", color=data_color, scale=1)
+iatt_label.x = TABS_X + 10
+iatt_label.y = TABS_Y + 50
+
+# Oil temperature label objects
+iat_label = label.Label(fontB, text="NA", color=data_color, scale=1)
+iat_label.x = TABS_X + 105
+iat_label.y = TABS_Y + 50
+
 # Rows
 row1 = row1_group
 row2 = row2_group
@@ -176,9 +188,10 @@ def tab1():
     clear_row(row1)
     clear_row(row2)
     clear_row(row3)
-    row1_group.append(clock_label)
-    row2_group.append(lambdat_label)
-    row2_group.append(lambda_label)
+    row1_group.append(lambdat_label)
+    row1_group.append(lambda_label)
+    row2_group.append(cltt_label)
+    row2_group.append(clt_label)
     row3_group.append(oiltt_label)
     row3_group.append(oilt_label)
 
@@ -186,9 +199,10 @@ def tab2():
     clear_row(row1)
     clear_row(row2)
     clear_row(row3)
-    row1_group.append(clock_label)
-    row2_group.append(lambdat_label)
-    row2_group.append(lambda_label)
+    row1_group.append(lambdat_label)
+    row1_group.append(lambda_label)
+    row2_group.append(oiltt_label)
+    row2_group.append(oilt_label)
     row3_group.append(oilpt_label)
     row3_group.append(oilp_label)
 
@@ -196,12 +210,12 @@ def tab3():
     clear_row(row1)
     clear_row(row2)
     clear_row(row3)
-    row1_group.append(oiltt_label)
-    row1_group.append(oilt_label)
-    row2_group.append(lambdat_label)
-    row2_group.append(lambda_label)
-    row3_group.append(oilpt_label)
-    row3_group.append(oilp_label)
+    row1_group.append(lambdat_label)
+    row1_group.append(lambda_label)
+    row2_group.append(cltt_label)
+    row2_group.append(clt_label)
+    row3_group.append(iatt_label)
+    row3_group.append(iat_label)
 
 # Read last tab drom sd card in startup if sd card ok
 if sd_card_ok == 1:
@@ -275,10 +289,6 @@ while True:
         touched = 0
         change_tab()
 
-    # Clock update
-    t = rtc.datetime
-    clock_label.text = "%02d:%02d" % (t.tm_hour, t.tm_min)
-
     # Update display
     display.root_group = view
 
@@ -303,21 +313,21 @@ while True:
         continue
 
     id = message.id
-    if id == 0x602:
+    if id == 0x600:
         # Unpack message
-        message = struct.unpack("<HBBBBh", data)
+        message = struct.unpack("<HBbHH", data)
         # Just for debugging
-        # print(f"0x602: {message}")
-        # Update oil pressure and oil temperature
+        # print(f"0x600: {message}")
+        # Update intake air temperature
+        iat_label.text = message[2]
+    if id == 0x602:
+        message = struct.unpack("<HBBBBh", data)
         oilt_label.text = message[2]
         oil_p = message[3]*0.0625
         oilp_label.text = round(oil_p, 1)
+        clt_label.text = message[5]
 
     if id == 0x603:
-        # Unpack message
         message = struct.unpack("<bBBBHH", data)
-        # Just for debugging
-        # print(f"0x603: {message}")
-        # Update lambda value
         lambda_value = message[2]*0.0078125
         lambda_label.text = round(lambda_value, 2)
