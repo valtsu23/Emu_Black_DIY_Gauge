@@ -1,6 +1,6 @@
 # Emu_Black_DIY_Gauge
 ### Adafruit Feather M4 CAN Express with 2.4" TFT FeatherWing displaying sensor values 
-
+### Updated 18.3.2025 and now supports Circuitpython 9 
 Project goal was to create a small gauge for my Honda S2000 that displays time and sensor values from car ECU. 
 Car is equipped with Ecumaster Emu Black ECU that can send data to CAN bus. Power supply for the device is 12v. 
 
