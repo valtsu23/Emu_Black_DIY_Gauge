@@ -281,9 +281,6 @@ while True:
     t = rtc.datetime
     clock_label.text = "%02d:%02d" % (t.tm_hour, t.tm_min)
 
-    # Update display
-    display.root_group = view
-
     # CAN BUS
     # Bus state information
     bus_state = can.state
