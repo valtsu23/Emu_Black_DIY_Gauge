@@ -1,5 +1,5 @@
 # Version 3.0
-# Works with Circuitpython 9
+# Circuitpython 9 support
 # Added SD card check, error handling and SD card error message
 # Other small improvements
 
@@ -78,6 +78,7 @@ lines_group = displayio.Group(x=0, y=0)
 
 # Display group
 view = displayio.Group()
+display.root_group = view
 view.append(error_group)
 view.append(lines_group)
 view.append(tab_number_group)
@@ -280,9 +281,6 @@ while True:
     t = rtc.datetime
     clock_label.text = "%02d:%02d" % (t.tm_hour, t.tm_min)
 
-    # Update display
-    display.root_group = view
-
     # CAN BUS
     # Bus state information
     bus_state = can.state
@@ -310,9 +308,9 @@ while True:
         # Just for debugging
         # print(f"0x602: {message}")
         # Update oil pressure and oil temperature
-        oilt_label.text = message[2]
+        oilt_label.text = str(message[2])
         oil_p = message[3]*0.0625
-        oilp_label.text = round(oil_p, 1)
+        oilp_label.text = str(round(oil_p, 1))
 
     if id == 0x603:
         # Unpack message
@@ -321,4 +319,4 @@ while True:
         # print(f"0x603: {message}")
         # Update lambda value
         lambda_value = message[2]*0.0078125
-        lambda_label.text = round(lambda_value, 2)
+        lambda_label.text = str(round(lambda_value, 2))
