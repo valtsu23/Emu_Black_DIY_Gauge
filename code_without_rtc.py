@@ -1,4 +1,5 @@
-# Version 2.0
+# Version 3.0
+# Circuitpython 9 support
 # Added SD card check, error handling and SD card error message
 # Other small improvements
 
